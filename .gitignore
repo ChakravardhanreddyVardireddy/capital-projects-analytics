@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+.env
+
+# Generated locally by scripts/01_clean_data.py - not committed to keep the
+# repo lean. data/construction_sample.csv (the static sample) IS committed.
+data/projects_raw.csv
+data/construction.db
