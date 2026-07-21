@@ -1,0 +1,35 @@
+{
+  "by_agency": [
+    {"agency": "DDC", "n": 39, "total_planned_budget": 15998277000, "pct_committed": 31.4},
+    {"agency": "DEP", "n": 51, "total_planned_budget": 15318827000, "pct_committed": 22.8},
+    {"agency": "DOT", "n": 28, "total_planned_budget": 9865241000, "pct_committed": 3.1},
+    {"agency": "SBS", "n": 14, "total_planned_budget": 2937701000, "pct_committed": 7.6},
+    {"agency": "DCAS", "n": 9, "total_planned_budget": 2106327000, "pct_committed": 2.0},
+    {"agency": "DSNY", "n": 2, "total_planned_budget": 780950000, "pct_committed": 2.9},
+    {"agency": "DPR", "n": 7, "total_planned_budget": 597335000, "pct_committed": 14.4},
+    {"agency": "BNY", "n": 1, "total_planned_budget": 372618000, "pct_committed": 0.0}
+  ],
+  "top_cost_variance": [
+    {"description": "MODIFICATION OF CHAMBERS AT HILLVIEW", "agency": "DEP", "planned_budget": 353181000, "committed_to_date": 837081475.11, "cost_variance_pct": 137.0},
+    {"description": "RECONSTRUCTION OF PRIMARY TANKS AT NORTH RIVER WPCP", "agency": "DEP", "planned_budget": 157486000, "committed_to_date": 162148496.91, "cost_variance_pct": 3.0},
+    {"description": "KENSICO-EASTVIEW CONNECTION TUNNEL", "agency": "DEP", "planned_budget": 1329070000, "committed_to_date": 1302681297.51, "cost_variance_pct": -2.0},
+    {"description": "CA Hudson River Drainage Chamber", "agency": "DEP", "planned_budget": 84574000, "committed_to_date": 78375278.34, "cost_variance_pct": -7.3},
+    {"description": "EAST RIVER ESPLANADE PHASE 3+", "agency": "DPR", "planned_budget": 85268000, "committed_to_date": 72530469.02, "cost_variance_pct": -14.9}
+  ],
+  "schedule_status": [
+    {"description": "DEP Lab Relocation", "agency": "DCAS", "maxdate": "2026-06-01", "planned_budget": 126601000, "pct_spent": 0.0},
+    {"description": "Community Wastewater Planning Assistance in EOH Watershed", "agency": "DEP", "maxdate": "2026-06-01", "planned_budget": 72000000, "pct_spent": 0.0},
+    {"description": "REPLACE TIDE GATES AT REGULATOR 26W-02 LOCATED @ 26TH WARD", "agency": "DEP", "maxdate": "2026-06-01", "planned_budget": 90000000, "pct_spent": 3.9},
+    {"description": "BROOKLYN BRIDGE - HAZARD MITIGATION", "agency": "DOT", "maxdate": "2026-06-01", "planned_budget": 814330000, "pct_spent": 100.0}
+  ],
+  "overview": {
+    "total_fixed_asset_projects": 202,
+    "started_projects": 157,
+    "started_total_budget_billion": 49.2,
+    "pct_committed_started": 18.7,
+    "projects_over_budget": 2,
+    "projects_past_completion": 4,
+    "likely_delayed": 3,
+    "median_duration_years": 9.0
+  }
+}

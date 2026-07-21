@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NYC Capital Construction Cost & Schedule Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<style>
+  :root { color-scheme: light; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f5f7fa; color: #1a2027; margin: 0; padding: 24px 32px 48px;
+  }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .subtitle { color: #5b6675; font-size: 14px; margin-bottom: 24px; }
+  .kpi-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+  .kpi-card {
+    background: white; border-radius: 10px; padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex: 1; min-width: 180px;
+  }
+  .kpi-value { font-size: 26px; font-weight: 700; color: #b5651d; }
+  .kpi-label { font-size: 13px; color: #5b6675; margin-top: 4px; }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .chart-card { background: white; border-radius: 10px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .full-width { grid-column: 1 / -1; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eef0f3; }
+  th { color: #5b6675; font-weight: 600; }
+  .footer-note { margin-top: 28px; font-size: 12px; color: #8a93a3; line-height: 1.6; }
+  @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+  <h1>NYC Capital Construction Cost &amp; Schedule Dashboard</h1>
+  <div class="subtitle">
+    NYC Capital Projects Database (CPDB) &mdash; FY26 Capital Plan, Fixed Asset construction projects &gt; $500K
+    &middot; Self-directed portfolio project, not employer work
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-value">202</div><div class="kpi-label">Capital construction projects analyzed (13 NYC agencies)</div></div>
+    <div class="kpi-card"><div class="kpi-value">$49.2B</div><div class="kpi-label">Combined budget of 157 already-started projects</div></div>
+    <div class="kpi-card"><div class="kpi-value">2</div><div class="kpi-label">Projects already exceeding their total planned commitment</div></div>
+    <div class="kpi-card"><div class="kpi-value">3 of 4</div><div class="kpi-label">Past-due projects showing signs of delay (&lt;90% spent)</div></div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card"><div id="chart-agency-budget" style="height:360px;"></div></div>
+    <div class="chart-card"><div id="chart-agency-pct" style="height:360px;"></div></div>
+    <div class="chart-card full-width">
+      <h3 style="margin:6px 0 12px 8px; font-size:15px;">Top 5 cost variance (committed vs. planned budget)</h3>
+      <table id="variance-table">
+        <thead><tr><th>Project</th><th>Agency</th><th>Planned Budget</th><th>Committed to Date</th><th>Cost Variance</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="chart-card full-width">
+      <h3 style="margin:6px 0 12px 8px; font-size:15px;">Schedule status: projects past planned completion date</h3>
+      <table id="schedule-table">
+        <thead><tr><th>Project</th><th>Agency</th><th>Planned Completion</th><th>Planned Budget</th><th>% of Budget Spent</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Data source: NYC Open Data, Capital Projects Database (CPDB) - Projects
+    (dataset fi59-268w), pulled live from data.cityofnewyork.us. Analysis
+    "as-of" date: 2026-07-21. This is a self-directed portfolio project
+    built on public NYC Open Data for job-search purposes &mdash; it does
+    not represent any employer's work or proprietary analysis. Full
+    methodology in the repo README.
+  </div>
+
+<script>
+const byAgency = [
+  {agency: "DDC", n: 39, total_planned_budget: 15998277000, pct_committed: 31.4},
+  {agency: "DEP", n: 51, total_planned_budget: 15318827000, pct_committed: 22.8},
+  {agency: "DOT", n: 28, total_planned_budget: 9865241000, pct_committed: 3.1},
+  {agency: "SBS", n: 14, total_planned_budget: 2937701000, pct_committed: 7.6},
+  {agency: "DCAS", n: 9, total_planned_budget: 2106327000, pct_committed: 2.0},
+  {agency: "DSNY", n: 2, total_planned_budget: 780950000, pct_committed: 2.9},
+  {agency: "DPR", n: 7, total_planned_budget: 597335000, pct_committed: 14.4},
+  {agency: "BNY", n: 1, total_planned_budget: 372618000, pct_committed: 0.0}
+];
+
+const topVariance = [
+  ["MODIFICATION OF CHAMBERS AT HILLVIEW","DEP",353181000,837081475.11,137.0],
+  ["RECONSTRUCTION OF PRIMARY TANKS AT NORTH RIVER WPCP","DEP",157486000,162148496.91,3.0],
+  ["KENSICO-EASTVIEW CONNECTION TUNNEL","DEP",1329070000,1302681297.51,-2.0],
+  ["CA Hudson River Drainage Chamber","DEP",84574000,78375278.34,-7.3],
+  ["EAST RIVER ESPLANADE PHASE 3+","DPR",85268000,72530469.02,-14.9]
+];
+
+const scheduleStatus = [
+  ["DEP Lab Relocation","DCAS","2026-06-01",126601000,0.0],
+  ["Community Wastewater Planning Assistance in EOH Watershed","DEP","2026-06-01",72000000,0.0],
+  ["REPLACE TIDE GATES AT REGULATOR 26W-02 LOCATED @ 26TH WARD","DEP","2026-06-01",90000000,3.9],
+  ["BROOKLYN BRIDGE - HAZARD MITIGATION","DOT","2026-06-01",814330000,100.0]
+];
+
+Plotly.newPlot('chart-agency-budget', [{
+  x: byAgency.map(d=>d.agency), y: byAgency.map(d=>d.total_planned_budget/1e9),
+  type:'bar', marker:{color:'#b5651d'}
+}], {
+  title: 'Total planned budget by agency ($B)',
+  yaxis: {title: 'Planned budget ($B)'},
+  margin: {t:40,b:60}
+}, {responsive:true, displayModeBar:false});
+
+Plotly.newPlot('chart-agency-pct', [{
+  x: byAgency.map(d=>d.agency), y: byAgency.map(d=>d.pct_committed),
+  type:'bar', marker:{color:'#1f4e8c'}
+}], {
+  title: '% of budget committed to contracts, by agency',
+  yaxis: {title: '% committed'},
+  margin: {t:40,b:60}
+}, {responsive:true, displayModeBar:false});
+
+const vtbody = document.querySelector('#variance-table tbody');
+topVariance.forEach(row => {
+  const tr = document.createElement('tr');
+  const sign = row[4] > 0 ? '+' : '';
+  tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>$${row[2].toLocaleString()}</td><td>$${Math.round(row[3]).toLocaleString()}</td><td>${sign}${row[4].toFixed(1)}%</td>`;
+  vtbody.appendChild(tr);
+});
+
+const stbody = document.querySelector('#schedule-table tbody');
+scheduleStatus.forEach(row => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>$${row[3].toLocaleString()}</td><td>${row[4].toFixed(1)}%</td>`;
+  stbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
