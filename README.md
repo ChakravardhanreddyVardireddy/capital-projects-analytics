@@ -62,7 +62,7 @@ city's capital plan:
 ## Repo structure
 
 ```
-capital-projects-analytics/
+construction-cost-schedule-variance/
 ├── README.md
 ├── LICENSE
 ├── requirements.txt
